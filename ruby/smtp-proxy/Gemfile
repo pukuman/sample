@@ -1,0 +1,11 @@
+# A sample Gemfile
+source "https://rubygems.org"
+
+# gem "rails"
+gem 'mini-smtp-server'
+gem 'mail'
+#gem "tlsmail"
+#
+require 'net/smtp'
+#require 'mail'
+#require 'tempfile'
