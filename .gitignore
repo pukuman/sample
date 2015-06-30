@@ -2,3 +2,5 @@
 .gems/
 *.swp
 *.bk
+*.pid
+*.output

@@ -4,8 +4,11 @@ source "https://rubygems.org"
 # gem "rails"
 gem 'mini-smtp-server'
 gem 'mail'
+gem 'pony'
+gem 'daemons'
 #gem "tlsmail"
 #
 require 'net/smtp'
+#require 'deamons'
 #require 'mail'
 #require 'tempfile'

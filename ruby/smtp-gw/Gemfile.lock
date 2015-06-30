@@ -1,17 +1,22 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    daemons (1.2.3)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     mime-types (2.6.1)
     mini-smtp-server (0.0.2)
+    pony (1.11)
+      mail (>= 2.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  daemons
   mail
   mini-smtp-server
+  pony
 
 BUNDLED WITH
-   1.10.2
+   1.10.4
