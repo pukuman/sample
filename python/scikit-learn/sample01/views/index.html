@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <script type="text/javascript">
+    var flagDrag = false;
+    var canvas;
+    var ctx;
+    var oldE=false;
+    var canvas2;
+    var ctx2;
+    
+    onload=function(){
+      document.addEventListener('mousedown',mouseDown);
+      document.addEventListener('mouseup'  ,mouseUp);
+      document.addEventListener('mousemove',mouseMove);
+      document.addEventListener('mouseover',mouseOver);
+      canvas = document.getElementById('draw_canvas');
+      ctx = canvas.getContext('2d');
+      ctx.strokeStyle = "#000000";
+      ctx.globalAlpha = 1.0;
+      ctx.lineWidth = 4;
+
+      canvas2 = document.getElementById('result_canvas');
+      ctx2 = canvas2.getContext('2d');
+    }
+
+    function mouseDown(e){
+      flagDrag = true;
+    }
+
+    function mouseUp(e){
+      flagDrag = false;
+    }
+
+    function mouseOver(e){
+      flagDrag = false;
+    }
+
+    function mouseMove(e){
+      if(!oldE){
+        oldE = e;
+      }
+
+      if(flagDrag){
+        var hosei = -6; // なんかマウスカーソルずれるので補正(適当)
+        ctx.beginPath();
+        ctx.moveTo(oldE.clientX+hosei,oldE.clientY+hosei);
+        ctx.lineTo(e.clientX+hosei,e.clientY+hosei);
+        ctx.closePath();
+        ctx.stroke();
+      }
+      oldE = e;
+    }
+
+    function drawClear(){
+      ctx.clearRect(0,0,64,64);
+      ctx2.clearRect(0,0,8,8);
+    }
+
+    function execMachineLearn(){
+      var width=64;
+      var imageData = ctx.getImageData(0,0,width,width);
+      var log = '';
+      var newImage = [];
+      for(baseY=0;baseY < width;baseY=baseY+8){
+        log = "Y[" + baseY + "]=(";
+        for(baseX=0;baseX < width;baseX=baseX+8){
+          var alphaTot = 0
+          for(y=0;y<8;y++){
+            for(x=0;x<8;x++){
+              var i =(((baseY+y)*width) + baseX+x)*4;
+//              var r = imageData.data[i]; var g = imageData.data[i+1]; var b = imageData.data[i+2];
+              var a = imageData.data[i+3];
+              if (a > 0){
+                alphaTot = alphaTot + 255;
+              }
+            }
+          }
+
+          log = log + (Math.round(alphaTot/64)) + ",";
+          newImage.push(Math.round(alphaTot/64));
+        } 
+        console.log(log + ")");
+      }
+      console.log(newImage);
+      console.log("-------------------");
+      var image2 = ctx2.getImageData(0,0,8,8);
+
+      for(i=0;i<64;i++){
+        p = i * 4;
+        image2.data[p+3] = 255;
+        if(newImage[i]>0){
+          image2.data[p]   = 255-newImage[i];
+          image2.data[p+1] = 255-newImage[i];
+          image2.data[p+2] = 255-newImage[i];
+        }else{
+          image2.data[p]   = 255;
+          image2.data[p+1] = 255;
+          image2.data[p+2] = 255;
+        }
+      }
+      console.log(image2.data);
+      ctx2.putImageData(image2,0,0);
+
+      var http = new XMLHttpRequest();
+      http.onreadystatechange = function(){
+        if(http.readyState == 4 && http.status == 200){
+          document.getElementById("result").innerHTML = http.responseText;
+        }
+      }
+      var wkArray = [];
+      for( a in newImage ){
+        wkArray.push(Math.round((newImage[a]*16/255)));
+      }
+      console.log(wkArray);
+      var url = "http://10.35.12.134:55888/machinelearn/" + wkArray.join("_");
+      document.getElementById("url").innerHTML = "<pre>" + url + "</pre>";
+      http.open("GET",url);
+      http.send(null);
+
+
+    }
+    
+
+  </script>
+  <body>
+    <canvas id="draw_canvas" width=64 height=64 style="width:64px;height:64px;margin:0;padding:0;border-style:solid;"></canvas>
+    <button type=button onclick='drawClear(ctx)'>クリア</button>
+    <canvas id="result_canvas" width=8 height=8 style="width:8px;height:8px;margin:0;padding:0;border-style:solid;"></canvas>
+    <button type=button onclick='execMachineLearn()'>送信</button>
+    <h1>RequestURL</h1>
+    <div id="url" style="border-style:solid;border-width:1px;">url</div>
+    <h1>答え</h1>
+    <div id="result" style="width:100px;padding:10px;margin:0px;border-style:solid;border-width:1px;">kotae</div>
+  </body>
+</html>
