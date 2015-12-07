@@ -8,10 +8,10 @@ from sklearn.externals import joblib
 def index(data):
     data_array = data.split('_')
 
-    # $B5!3#3X=,7k2L$N%b%G%k$rFI$_9~$_(B
+    # 機械学習結果のモデルを読み込み
     clf = joblib.load('./clf/sample01.pkl')
 
-    # $B<B9T(B
+    # 実行
     result = clf.predict([data_array])
     r = HTTPResponse(sattus=200, body = '<h1>%d</h1>' % result)
     r.set_header('Access-Control-Allow-Origin','*');

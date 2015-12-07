@@ -1,20 +1,20 @@
-# $B5!3#3X=,MQ$N%i%$%V%i%k$r%m!<%I(B
+# 機械学習用のライブラルをロード
 from sklearn import datasets
 from sklearn import svm
 from sklearn.externals import joblib
 
-# $B%5%s%W%k%G!<%?$N%m!<%I(B
+# サンプルデータのロード
 digits = datasets.load_digits()
 
-# $B5!3#3X=,J}<0$H$7$F!"%5%]!<%H%Y%/%?!<%^%7%s(B(SVC)$B$r;XDj(B
+# 機械学習方式として、サポートベクターマシン(SVC)を指定
 clf = svm.SVC(gamma=0.001, C=100.)
 
-# $B%5%s%W%k%G!<%?$rEO$7$F!"5!3#3X=,<B9T(B
-#   digits.data   = $BF~NO%G!<%?(B($B?tCM$N(B2$B<!85G[Ns(B)
-#   digits.target = $B@52r%G!<%?(B($B?tCM$N(B1$B<!85G[Ns(B)
+# サンプルデータを渡して、機械学習実行
+#   digits.data   = 入力データ(数値の2次元配列)
+#   digits.target = 正解データ(数値の1次元配列)
 clf.fit(digits.data,digits.target)
 
-# $B5!3#3X=,$N7k2L:n@.$5$l$?%b%G%k$rJ]B8(B($B%7%j%"%i%$%:(B)
+# 機械学習の結果作成されたモデルを保存(シリアライズ)
 joblib.dump(clf, './clf/sample01.pkl')
 
 
