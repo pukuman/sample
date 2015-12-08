@@ -1,12 +1,15 @@
+# coding: UTF-8
+
 from bottle import route, run, HTTPResponse
 
 from sklearn import datasets
 from sklearn import svm
 from sklearn.externals import joblib
+import numpy
 
 @route('/machinelearn/<data>')
 def index(data):
-    data_array = data.split('_')
+    data_array = numpy.array(data.split('_'),dtype=numpy.float)
 
     # 機械学習結果のモデルを読み込み
     clf = joblib.load('./clf/sample01.pkl')

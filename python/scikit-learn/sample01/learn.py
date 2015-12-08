@@ -1,3 +1,4 @@
+# coding: UTF-8
 # 機械学習用のライブラルをロード
 from sklearn import datasets
 from sklearn import svm

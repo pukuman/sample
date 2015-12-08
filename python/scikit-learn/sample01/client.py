@@ -1,3 +1,4 @@
+# coding: UTF-8
 from bottle import route, run, template, HTTPResponse
 
 

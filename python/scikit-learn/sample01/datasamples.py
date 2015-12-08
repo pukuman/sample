@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 from sklearn import datasets
 from sklearn import svm
 
