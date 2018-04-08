@@ -1,0 +1,20 @@
+version: '2'
+services:
+  server:
+    image: selenium/standalone-firefox:3.11
+    ports:
+      - 4444:4444
+    shm_size: '2gb'
+    volumes:
+      - ./data:/data
+  app:
+    image: ruby2.5-selenium
+    build:
+      context: ./
+    links:
+      - server
+    environment:
+      - SELENIUM_SERVER=server:4444
+    volumes:
+      - ./app:/app
+      - ./data:/data
