@@ -42,14 +42,14 @@ File.open(DOCS_TEXT).each_line{|l|
   doc_type  = ($2 == 'a') ? '.zip' : '.pdf'
 
   download_url  = NONSTOP_DOCVIEW_URL + doc_id
-  download_file = DOWNLOAD_FILE + doc_type
-  download_file_ptn = DOWNLOAD_FILE + "*.*"
-  save_file     = DOWNLOAD_DIR + "/" + doc_id + doc_type
+  download_file_ptn = [DOWNLOAD_FILE + "*.zip",DOWNLOAD_FILE + "*.pdf"]
+  save_file     = DOWNLOAD_DIR + "/" + doc_id 
+  save_file_ptn = [ DOWNLOAD_DIR + "/" + doc_id  + "*.zip",DOWNLOAD_DIR + "/" + doc_id  + "*.pdf"]
 
   logOut(logFile,"DownLoad Start #{doc_title}(#{doc_id})")
-  if(Dir.glob(download_file_ptn)).size > 0)then
+  if(Dir.glob(save_file_ptn).size > 0)then
     logOut(logFile," (ERR)Already Downloaded(#{doc_id}(#{doc_title}))")
-    logOut(logFile,"       file=#{Dir.glob(download_file_ptn))[0]}!!!")
+    logOut(logFile,"       file=#{Dir.glob(save_file_ptn)[0]}!!!")
     next
   end
   driver.navigate.to download_url
@@ -69,7 +69,7 @@ File.open(DOCS_TEXT).each_line{|l|
   retry_count = 0
   while(1) do
     sleep(SLEEP_INTERVAL)
-    unless(File.exist?(download_file)) or (Dir.glob(download_file_ptn)).size > 0)then
+    unless(Dir.glob(save_file_ptn).size > 0) or (Dir.glob(download_file_ptn).size > 0)then
       retry_count = retry_count + 1
       logOut(logFile," File Not Exist.Retry!(#{retry_count})")
       if(retry_count > RETRY_MAX ) then
@@ -88,8 +88,16 @@ File.open(DOCS_TEXT).each_line{|l|
     next
   end
 
+  if(Dir.glob(download_file_ptn).size >0)then
+    download_file = Dir.glob(download_file_ptn)[0]
+    save_file = save_file + File.extname(download_file)
+    File.rename(download_file,save_file) 
+  elsif(Dir.glob(save_file_ptn).size >0) then
+    save_file = Dir.glob(save_file_ptn)[0]
+  end
 
-  File.rename(download_file,save_file) 
+  doc_file = DOWNLOAD_DIR + "/" + doc_title.gsub(/[ ,:\/]/,"_") + File.extname(save_file)
+  File.rename(save_file, doc_file)
 
 }
                             
