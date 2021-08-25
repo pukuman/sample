@@ -136,6 +136,9 @@ int Sort(int *SortValues, int max_size, int *SortedValues){
     SortedValues[i] = now_item->value;
     now_item = now_item->large;
   }
+  
+  return 0;
+
 }
 
 int QsortCompareInt(const void *a, const void *b){
